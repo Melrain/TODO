@@ -21,7 +21,7 @@ export async function TaskStats() {
           </div>
           <div>
             <p className="text-2xl font-bold">{stats.total}</p>
-            <p className="text-xs text-muted-foreground">Total</p>
+            <p className="text-xs text-muted-foreground">总计</p>
           </div>
         </CardContent>
       </Card>
@@ -33,7 +33,7 @@ export async function TaskStats() {
           </div>
           <div>
             <p className="text-2xl font-bold">{stats.todo}</p>
-            <p className="text-xs text-muted-foreground">Todo</p>
+            <p className="text-xs text-muted-foreground">待办</p>
           </div>
         </CardContent>
       </Card>
@@ -45,7 +45,7 @@ export async function TaskStats() {
           </div>
           <div>
             <p className="text-2xl font-bold">{stats.inProgress}</p>
-            <p className="text-xs text-muted-foreground">In Progress</p>
+            <p className="text-xs text-muted-foreground">进行中</p>
           </div>
         </CardContent>
       </Card>
@@ -57,7 +57,7 @@ export async function TaskStats() {
           </div>
           <div>
             <p className="text-2xl font-bold">{stats.done}</p>
-            <p className="text-xs text-muted-foreground">Done</p>
+            <p className="text-xs text-muted-foreground">已完成</p>
           </div>
         </CardContent>
       </Card>

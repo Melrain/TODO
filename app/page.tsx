@@ -34,7 +34,7 @@ export default async function HomePage({
               </div>
               <div>
                 <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-                  Dev Tasks
+                  开发任务
                 </h1>
                 <div className="flex items-center gap-2 mt-1">
                   <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
@@ -47,7 +47,7 @@ export default async function HomePage({
             <ThemeToggle />
           </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <p>Track bugs, features, and everything in between</p>
+            <p>追踪 Bug、功能需求以及开发中的一切</p>
             <span className="text-muted-foreground/60">•</span>
             <span className="text-xs">开发日期: {appDevDate}</span>
           </div>

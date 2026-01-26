@@ -17,8 +17,8 @@ export async function TaskList({
           <ClipboardList className="h-12 w-12" />
         </EmptyMedia>
         <EmptyHeader>
-          <EmptyTitle>No tasks found</EmptyTitle>
-          <EmptyDescription>Create a new task to get started</EmptyDescription>
+          <EmptyTitle>暂无任务</EmptyTitle>
+          <EmptyDescription>创建新任务开始使用</EmptyDescription>
         </EmptyHeader>
       </Empty>
     )

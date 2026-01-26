@@ -18,7 +18,7 @@ export function ThemeToggle() {
     return (
       <Button variant="outline" size="icon" className="h-9 w-9">
         <Sun className="h-4 w-4" />
-        <span className="sr-only">Toggle theme</span>
+        <span className="sr-only">切换主题</span>
       </Button>
     )
   }
@@ -35,7 +35,7 @@ export function ThemeToggle() {
       ) : (
         <Moon className="h-4 w-4" />
       )}
-      <span className="sr-only">Toggle theme</span>
+      <span className="sr-only">切换主题</span>
     </Button>
   )
 }

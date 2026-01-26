@@ -47,13 +47,13 @@ export function TaskFilters() {
         onValueChange={(value) => updateFilter('status', value)}
       >
         <SelectTrigger className="w-[140px]">
-          <SelectValue placeholder="Status" />
+          <SelectValue placeholder="状态" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All Status</SelectItem>
-          <SelectItem value="todo">Todo</SelectItem>
-          <SelectItem value="in_progress">In Progress</SelectItem>
-          <SelectItem value="done">Done</SelectItem>
+          <SelectItem value="all">全部状态</SelectItem>
+          <SelectItem value="todo">待办</SelectItem>
+          <SelectItem value="in_progress">进行中</SelectItem>
+          <SelectItem value="done">已完成</SelectItem>
         </SelectContent>
       </Select>
 
@@ -62,16 +62,16 @@ export function TaskFilters() {
         onValueChange={(value) => updateFilter('category', value)}
       >
         <SelectTrigger className="w-[140px]">
-          <SelectValue placeholder="Category" />
+          <SelectValue placeholder="分类" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All Categories</SelectItem>
+          <SelectItem value="all">全部分类</SelectItem>
           <SelectItem value="bug">Bug</SelectItem>
-          <SelectItem value="feature">Feature</SelectItem>
-          <SelectItem value="refactor">Refactor</SelectItem>
-          <SelectItem value="docs">Docs</SelectItem>
-          <SelectItem value="test">Test</SelectItem>
-          <SelectItem value="other">Other</SelectItem>
+          <SelectItem value="feature">功能</SelectItem>
+          <SelectItem value="refactor">重构</SelectItem>
+          <SelectItem value="docs">文档</SelectItem>
+          <SelectItem value="test">测试</SelectItem>
+          <SelectItem value="other">其他</SelectItem>
         </SelectContent>
       </Select>
 
@@ -80,14 +80,14 @@ export function TaskFilters() {
         onValueChange={(value) => updateFilter('priority', value)}
       >
         <SelectTrigger className="w-[140px]">
-          <SelectValue placeholder="Priority" />
+          <SelectValue placeholder="优先级" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All Priorities</SelectItem>
-          <SelectItem value="low">Low</SelectItem>
-          <SelectItem value="medium">Medium</SelectItem>
-          <SelectItem value="high">High</SelectItem>
-          <SelectItem value="critical">Critical</SelectItem>
+          <SelectItem value="all">全部优先级</SelectItem>
+          <SelectItem value="low">低</SelectItem>
+          <SelectItem value="medium">中</SelectItem>
+          <SelectItem value="high">高</SelectItem>
+          <SelectItem value="critical">紧急</SelectItem>
         </SelectContent>
       </Select>
     </div>

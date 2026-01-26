@@ -66,65 +66,65 @@ export function TaskForm() {
       <DialogTrigger asChild>
         <Button className="gap-2">
           <Plus className="h-4 w-4" />
-          New Task
+          新建任务
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Create New Task</DialogTitle>
+          <DialogTitle>创建新任务</DialogTitle>
         </DialogHeader>
         <form action={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
-            <Input id="title" name="title" placeholder="Fix authentication bug..." required />
+            <Label htmlFor="title">标题</Label>
+            <Input id="title" name="title" placeholder="修复认证漏洞..." required />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">描述</Label>
             <Textarea
               id="description"
               name="description"
-              placeholder="Describe the task..."
+              placeholder="描述任务内容..."
               rows={3}
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Category</Label>
+              <Label>分类</Label>
               <Select name="category" defaultValue="feature">
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="bug">Bug</SelectItem>
-                  <SelectItem value="feature">Feature</SelectItem>
-                  <SelectItem value="refactor">Refactor</SelectItem>
-                  <SelectItem value="docs">Docs</SelectItem>
-                  <SelectItem value="test">Test</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
+                  <SelectItem value="feature">功能</SelectItem>
+                  <SelectItem value="refactor">重构</SelectItem>
+                  <SelectItem value="docs">文档</SelectItem>
+                  <SelectItem value="test">测试</SelectItem>
+                  <SelectItem value="other">其他</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-2">
-              <Label>Priority</Label>
+              <Label>优先级</Label>
               <Select name="priority" defaultValue="medium">
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="low">Low</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
-                  <SelectItem value="critical">Critical</SelectItem>
+                  <SelectItem value="low">低</SelectItem>
+                  <SelectItem value="medium">中</SelectItem>
+                  <SelectItem value="high">高</SelectItem>
+                  <SelectItem value="critical">紧急</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label>Tags</Label>
+            <Label>标签</Label>
             <div className="flex gap-2">
               <Input
                 value={tagInput}
@@ -138,7 +138,7 @@ export function TaskForm() {
                 }}
               />
               <Button type="button" variant="outline" onClick={addTag}>
-                Add
+                添加
               </Button>
             </div>
             {tags.length > 0 && (
@@ -160,10 +160,10 @@ export function TaskForm() {
               setOpen(false)
               setTaskFormOpen(false)
             }}>
-              Cancel
+              取消
             </Button>
             <Button type="submit" disabled={isPending}>
-              {isPending ? 'Creating...' : 'Create Task'}
+              {isPending ? '创建中...' : '创建任务'}
             </Button>
           </div>
         </form>

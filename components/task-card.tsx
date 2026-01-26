@@ -24,6 +24,15 @@ const categoryIcons = {
   other: FileCode,
 }
 
+const categoryLabels = {
+  bug: 'Bug',
+  feature: '功能',
+  refactor: '重构',
+  docs: '文档',
+  test: '测试',
+  other: '其他',
+}
+
 const categoryColors = {
   bug: 'bg-red-500/15 text-red-600 dark:text-red-400 border-red-500/30 dark:bg-red-500/20',
   feature: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 dark:bg-emerald-500/20',
@@ -82,18 +91,18 @@ export function TaskCard({ task }: { task: Task }) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => handleStatusChange('todo')} disabled={task.status === 'todo'}>
-                Mark as Todo
+                标记为待办
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleStatusChange('in_progress')} disabled={task.status === 'in_progress'}>
-                Mark as In Progress
+                标记为进行中
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleStatusChange('done')} disabled={task.status === 'done'}>
-                Mark as Done
+                标记为已完成
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleDelete} className="text-red-400 focus:text-red-400">
                 <Trash2 className="h-4 w-4 mr-2" />
-                Delete
+                删除
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -105,10 +114,10 @@ export function TaskCard({ task }: { task: Task }) {
         )}
         <div className="flex flex-wrap items-center gap-1.5">
           <Badge variant="outline" className={`text-xs ${priorityColors[task.priority]}`}>
-            {task.priority}
+            {task.priority === 'low' ? '低' : task.priority === 'medium' ? '中' : task.priority === 'high' ? '高' : '紧急'}
           </Badge>
-          <Badge variant="outline" className="text-xs capitalize">
-            {task.status.replace('_', ' ')}
+          <Badge variant="outline" className="text-xs">
+            {task.status === 'todo' ? '待办' : task.status === 'in_progress' ? '进行中' : '已完成'}
           </Badge>
           {task.tags?.map((tag) => (
             <Badge key={tag} variant="secondary" className="text-xs bg-accent/50">

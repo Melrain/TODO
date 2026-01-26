@@ -5,8 +5,8 @@ import { ThemeProvider } from '@/components/theme-provider'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Dev Tasks - Developer Todo List',
-  description: 'A personal task manager for software developers',
+  title: '开发任务 - 开发者待办清单',
+  description: '专为软件开发者设计的个人任务管理器',
   generator: 'v0.app',
   icons: {
     icon: [
@@ -33,7 +33,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="zh-CN" suppressHydrationWarning>
       <body className={`font-sans antialiased`}>
         <ThemeProvider
           attribute="class"
