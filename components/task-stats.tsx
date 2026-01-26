@@ -13,7 +13,7 @@ export async function TaskStats({ projectId }: { projectId?: string }) {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 mb-6">
       <Card className="bg-card/90 backdrop-blur-sm hover:shadow-md transition-all duration-200 border-slate-200/60 dark:border-slate-800">
         <CardContent className="flex items-center gap-3 p-4">
           <div className="p-2 rounded-lg bg-slate-500/15 dark:bg-slate-500/20 border border-slate-500/20">
