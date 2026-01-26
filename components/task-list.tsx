@@ -1,4 +1,4 @@
-import { getTasks } from '@/app/actions'
+import { getTasks } from '@/lib/actions'
 import { TaskCard } from './task-card'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { ClipboardList } from 'lucide-react'

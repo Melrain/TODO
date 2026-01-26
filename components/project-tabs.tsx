@@ -1,6 +1,6 @@
 'use client'
 
-import { getProjects, createProject, deleteProject } from '@/app/actions'
+import { getProjects, createProject, deleteProject } from '@/lib/actions'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Plus, X } from 'lucide-react'
@@ -16,7 +16,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { useTaskStore } from '@/lib/store'
-import { type Project } from '@/lib/db'
+import { type Project } from '@/lib/actions'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -142,22 +142,22 @@ export function ProjectTabs() {
         <div className="flex items-center justify-between mb-2">
           <TabsList className="flex-wrap h-auto">
             {projects.map((project) => (
-              <TabsTrigger
-                key={project.id}
-                value={project.id}
-                className="relative group"
-              >
-                <span className="pr-6">{project.name}</span>
+              <div key={project.id} className="relative group inline-flex">
+                <TabsTrigger
+                  value={project.id}
+                  className="pr-6"
+                >
+                  {project.name}
+                </TabsTrigger>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-5 w-5 absolute right-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                    <button
+                      type="button"
+                      className="h-5 w-5 absolute right-1 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity inline-flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 z-10"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <MoreVertical className="h-3 w-3" />
-                    </Button>
+                    </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem
@@ -169,7 +169,7 @@ export function ProjectTabs() {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-              </TabsTrigger>
+              </div>
             ))}
           </TabsList>
           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>

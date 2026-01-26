@@ -1,7 +1,7 @@
 'use client'
 
-import { type Task } from '@/lib/db'
-import { updateTask } from '@/app/actions'
+import { type Task } from '@/lib/actions'
+import { updateTask } from '@/lib/actions'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'

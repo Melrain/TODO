@@ -1,7 +1,7 @@
 'use client'
 
-import { type Task } from '@/lib/db'
-import { updateTaskStatus, deleteTask } from '@/app/actions'
+import { type Task } from '@/lib/actions'
+import { updateTaskStatus, deleteTask } from '@/lib/actions'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'

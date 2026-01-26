@@ -1,4 +1,4 @@
-import { getTasks } from '@/app/actions'
+import { getTasks } from '@/lib/actions'
 import { Card, CardContent } from '@/components/ui/card'
 import { CheckCircle, Circle, Clock, ListTodo } from 'lucide-react'
 
