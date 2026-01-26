@@ -4,6 +4,7 @@ import { ProjectTabs } from '@/components/project-tabs';
 import { TasksContent } from '@/components/tasks-content';
 import { TasksContentServer } from '@/components/tasks-content-server';
 import { ProjectIdSync } from '@/components/project-id-sync';
+import { ThemeBackground } from '@/components/backgrounds/theme-background';
 import { Code2, Calendar } from 'lucide-react';
 import { format } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
@@ -29,8 +30,9 @@ export default async function HomePage({
   const projectId = filters.projectId;
 
   return (
-    <main className='min-h-screen bg-gradient-to-br from-background via-background to-muted/30 dark:from-background dark:via-background dark:to-muted/10'>
-      <div className='mx-auto max-w-6xl px-4 py-8'>
+    <main className='min-h-screen relative'>
+      <ThemeBackground />
+      <div className='relative mx-auto max-w-6xl px-4 py-8'>
         <header className='mb-8'>
           <div className='flex items-center justify-between mb-2'>
             <div className='flex items-center gap-3'>
