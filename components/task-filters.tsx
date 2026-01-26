@@ -9,15 +9,19 @@ import {
 } from '@/components/ui/select'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useTaskStore } from '@/lib/store'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 export function TaskFilters() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { filters, setFilters } = useTaskStore()
+  const initializedRef = useRef(false)
 
-  // Sync URL params with store on mount
+  // Sync URL params with store on mount (only once)
   useEffect(() => {
+    if (initializedRef.current) return
+    initializedRef.current = true
+
     const status = searchParams.get('status') || undefined
     const category = searchParams.get('category') || undefined
     const priority = searchParams.get('priority') || undefined
@@ -26,7 +30,7 @@ export function TaskFilters() {
       setFilters({ status, category, priority })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams])
+  }, [])
 
   const updateFilter = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString())

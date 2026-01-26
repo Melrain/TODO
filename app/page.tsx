@@ -1,27 +1,27 @@
 import { Suspense } from 'react'
-import { TaskForm } from '@/components/task-form'
-import { TaskFilters } from '@/components/task-filters'
-import { TaskList } from '@/components/task-list'
-import { TaskStats } from '@/components/task-stats'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { ProjectTabs } from '@/components/project-tabs'
+import { TasksContent } from '@/components/tasks-content'
+import { TasksContentServer } from '@/components/tasks-content-server'
+import { ProjectIdSync } from '@/components/project-id-sync'
 import { Code2, Calendar } from 'lucide-react'
-import { Skeleton } from '@/components/ui/skeleton'
 import { format } from 'date-fns'
 import { zhCN } from 'date-fns/locale'
 
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string; category?: string; priority?: string }>
+  searchParams: Promise<{ status?: string; category?: string; priority?: string; projectId?: string }>
 }) {
-  const filters = await searchParams
-  
   // Get today's date
   const today = new Date()
   const todayFormatted = format(today, 'yyyy年MM月dd日 EEEE', { locale: zhCN })
   
   // App development date (today)
   const appDevDate = format(today, 'yyyy年MM月dd日', { locale: zhCN })
+
+  const filters = await searchParams
+  const projectId = filters.projectId
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-background via-background to-muted/30 dark:from-background dark:via-background dark:to-muted/10">
@@ -53,41 +53,19 @@ export default async function HomePage({
           </div>
         </header>
 
-        <Suspense fallback={<StatsLoading />}>
-          <TaskStats />
+        <ProjectTabs />
+
+        <ProjectIdSync />
+
+        <Suspense fallback={null}>
+          <TasksContentServer 
+            projectId={projectId} 
+            filters={{ status: filters.status, category: filters.category, priority: filters.priority }}
+          />
         </Suspense>
 
-        <div className="flex flex-col gap-4 mt-8 mb-6 sm:flex-row sm:items-center sm:justify-between">
-          <Suspense fallback={null}>
-            <TaskFilters />
-          </Suspense>
-          <TaskForm />
-        </div>
-
-        <Suspense fallback={<TasksLoading />}>
-          <TaskList filters={filters} />
-        </Suspense>
+        <TasksContent />
       </div>
     </main>
-  )
-}
-
-function StatsLoading() {
-  return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-      {[...Array(4)].map((_, i) => (
-        <Skeleton key={i} className="h-[76px] rounded-lg" />
-      ))}
-    </div>
-  )
-}
-
-function TasksLoading() {
-  return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      {[...Array(6)].map((_, i) => (
-        <Skeleton key={i} className="h-[140px] rounded-lg" />
-      ))}
-    </div>
   )
 }

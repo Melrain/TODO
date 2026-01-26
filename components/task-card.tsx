@@ -12,8 +12,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Bug, FileText, Layers, MoreVertical, TestTube, Trash2, Wrench, FileCode } from 'lucide-react'
-import { useTransition } from 'react'
+import { Bug, FileText, Layers, MoreVertical, TestTube, Trash2, Wrench, FileCode, Edit } from 'lucide-react'
+import { useTransition, useState } from 'react'
+import { TaskEditForm } from './task-edit-form'
 
 const categoryIcons = {
   bug: Bug,
@@ -32,6 +33,15 @@ const categoryLabels = {
   test: '测试',
   other: '其他',
 }
+
+const categories = [
+  { value: 'bug', label: 'Bug' },
+  { value: 'feature', label: '功能' },
+  { value: 'refactor', label: '重构' },
+  { value: 'docs', label: '文档' },
+  { value: 'test', label: '测试' },
+  { value: 'other', label: '其他' },
+]
 
 const categoryColors = {
   bug: 'bg-red-500/15 text-red-600 dark:text-red-400 border-red-500/30 dark:bg-red-500/20',
@@ -57,6 +67,7 @@ const statusColors = {
 
 export function TaskCard({ task }: { task: Task }) {
   const [isPending, startTransition] = useTransition()
+  const [isEditOpen, setIsEditOpen] = useState(false)
   const CategoryIcon = categoryIcons[task.category]
 
   const handleStatusChange = (status: Task['status']) => {
@@ -90,6 +101,11 @@ export function TaskCard({ task }: { task: Task }) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setIsEditOpen(true)}>
+                <Edit className="h-4 w-4 mr-2" />
+                编辑
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => handleStatusChange('todo')} disabled={task.status === 'todo'}>
                 标记为待办
               </DropdownMenuItem>
@@ -119,13 +135,17 @@ export function TaskCard({ task }: { task: Task }) {
           <Badge variant="outline" className="text-xs">
             {task.status === 'todo' ? '待办' : task.status === 'in_progress' ? '进行中' : '已完成'}
           </Badge>
-          {task.tags?.map((tag) => (
-            <Badge key={tag} variant="secondary" className="text-xs bg-accent/50">
-              {tag}
-            </Badge>
-          ))}
+          {task.tags?.map((tag) => {
+            const category = categories.find(c => c.value === tag)
+            return (
+              <Badge key={tag} variant="secondary" className="text-xs bg-accent/50">
+                {category?.label || tag}
+              </Badge>
+            )
+          })}
         </div>
       </CardContent>
+      <TaskEditForm task={task} open={isEditOpen} onOpenChange={setIsEditOpen} />
     </Card>
   )
 }

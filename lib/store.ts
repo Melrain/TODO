@@ -13,6 +13,10 @@ type TaskStore = {
   setFilters: (filters: FilterState) => void
   resetFilters: () => void
   
+  // Project state
+  currentProjectId: string
+  setCurrentProjectId: (projectId: string) => void
+  
   // UI state
   isTaskFormOpen: boolean
   setTaskFormOpen: (open: boolean) => void
@@ -34,6 +38,10 @@ export const useTaskStore = create<TaskStore>()(
       setFilters: (filters) => set({ filters }),
       resetFilters: () => set({ filters: {} }),
       
+      // Project state
+      currentProjectId: '',
+      setCurrentProjectId: (projectId) => set({ currentProjectId: projectId }),
+      
       // UI state
       isTaskFormOpen: false,
       setTaskFormOpen: (open) => set({ isTaskFormOpen: open }),
@@ -49,7 +57,8 @@ export const useTaskStore = create<TaskStore>()(
     {
       name: 'task-store',
       partialize: (state) => ({
-        filters: state.filters, // Only persist filters
+        filters: state.filters,
+        currentProjectId: state.currentProjectId, // Persist current project
       }),
     }
   )

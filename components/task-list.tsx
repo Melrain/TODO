@@ -5,10 +5,12 @@ import { ClipboardList } from 'lucide-react'
 
 export async function TaskList({
   filters,
+  projectId,
 }: {
   filters?: { status?: string; category?: string; priority?: string }
+  projectId?: string
 }) {
-  const tasks = await getTasks(filters)
+  const tasks = await getTasks({ ...filters, projectId })
 
   if (tasks.length === 0) {
     return (

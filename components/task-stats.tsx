@@ -2,8 +2,8 @@ import { getTasks } from '@/app/actions'
 import { Card, CardContent } from '@/components/ui/card'
 import { CheckCircle, Circle, Clock, ListTodo } from 'lucide-react'
 
-export async function TaskStats() {
-  const tasks = await getTasks()
+export async function TaskStats({ projectId }: { projectId?: string }) {
+  const tasks = await getTasks({ projectId })
   
   const stats = {
     total: tasks.length,

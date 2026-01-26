@@ -1,6 +1,7 @@
 'use client'
 
-import { createTask } from '@/app/actions'
+import { type Task } from '@/lib/db'
+import { updateTask } from '@/app/actions'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -17,12 +18,10 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog'
-import { Plus, X } from 'lucide-react'
-import { useState, useTransition } from 'react'
+import { X } from 'lucide-react'
+import { useState, useTransition, useEffect } from 'react'
 import { Badge } from '@/components/ui/badge'
-import { useTaskStore } from '@/lib/store'
 import { Checkbox } from '@/components/ui/checkbox'
 
 const categories = [
@@ -34,11 +33,32 @@ const categories = [
   { value: 'other', label: '其他' },
 ]
 
-export function TaskForm() {
-  const { isTaskFormOpen, setTaskFormOpen, triggerRefresh, currentProjectId } = useTaskStore()
-  const [open, setOpen] = useState(false)
+export function TaskEditForm({ 
+  task, 
+  open, 
+  onOpenChange 
+}: { 
+  task: Task
+  open: boolean
+  onOpenChange: (open: boolean) => void
+}) {
   const [isPending, startTransition] = useTransition()
-  const [tags, setTags] = useState<string[]>([])
+  const [title, setTitle] = useState(task.title)
+  const [description, setDescription] = useState(task.description || '')
+  const [category, setCategory] = useState<Task['category']>(task.category)
+  const [priority, setPriority] = useState<Task['priority']>(task.priority)
+  const [status, setStatus] = useState<Task['status']>(task.status)
+  const [tags, setTags] = useState<string[]>(task.tags || [])
+
+  // Reset form when task changes
+  useEffect(() => {
+    setTitle(task.title)
+    setDescription(task.description || '')
+    setCategory(task.category)
+    setPriority(task.priority)
+    setStatus(task.status)
+    setTags(task.tags || [])
+  }, [task])
 
   const toggleTag = (tag: string) => {
     if (tags.includes(tag)) {
@@ -48,54 +68,58 @@ export function TaskForm() {
     }
   }
 
-  const handleSubmit = (formData: FormData) => {
-    if (!currentProjectId) {
-      alert('请先选择一个项目')
-      return
-    }
-
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
     startTransition(async () => {
-      await createTask({
-        projectId: currentProjectId,
-        title: formData.get('title') as string,
-        description: formData.get('description') as string,
-        category: formData.get('category') as any,
-        priority: formData.get('priority') as any,
+      await updateTask(task.id, {
+        title,
+        description: description || null,
+        category,
+        priority,
+        status,
         tags,
       })
-      setTags([])
-      setOpen(false)
-      setTaskFormOpen(false)
-      triggerRefresh()
+      onOpenChange(false)
     })
   }
 
+  const handleOpenChange = (newOpen: boolean) => {
+    if (!newOpen) {
+      // Reset form when closing
+      setTitle(task.title)
+      setDescription(task.description || '')
+      setCategory(task.category)
+      setPriority(task.priority)
+      setStatus(task.status)
+      setTags(task.tags || [])
+    }
+    onOpenChange(newOpen)
+  }
+
   return (
-    <Dialog open={open || isTaskFormOpen} onOpenChange={(isOpen) => {
-      setOpen(isOpen)
-      setTaskFormOpen(isOpen)
-    }}>
-      <DialogTrigger asChild>
-        <Button className="gap-2">
-          <Plus className="h-4 w-4" />
-          新建任务
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>创建新任务</DialogTitle>
+          <DialogTitle>编辑任务</DialogTitle>
         </DialogHeader>
-        <form action={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">标题</Label>
-            <Input id="title" name="title" placeholder="修复认证漏洞..." required />
+            <Label htmlFor="edit-title">标题</Label>
+            <Input
+              id="edit-title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="修复认证漏洞..."
+              required
+            />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">描述</Label>
+            <Label htmlFor="edit-description">描述</Label>
             <Textarea
-              id="description"
-              name="description"
+              id="edit-description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
               placeholder="描述任务内容..."
               rows={3}
             />
@@ -104,7 +128,7 @@ export function TaskForm() {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>分类</Label>
-              <Select name="category" defaultValue="feature">
+              <Select value={category} onValueChange={(value: Task['category']) => setCategory(value)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -121,7 +145,7 @@ export function TaskForm() {
 
             <div className="space-y-2">
               <Label>优先级</Label>
-              <Select name="priority" defaultValue="medium">
+              <Select value={priority} onValueChange={(value: Task['priority']) => setPriority(value)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -136,20 +160,34 @@ export function TaskForm() {
           </div>
 
           <div className="space-y-2">
+            <Label>状态</Label>
+            <Select value={status} onValueChange={(value: Task['status']) => setStatus(value)}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todo">待办</SelectItem>
+                <SelectItem value="in_progress">进行中</SelectItem>
+                <SelectItem value="done">已完成</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
             <Label>标签（可多选）</Label>
             <div className="grid grid-cols-2 gap-2 p-3 border rounded-md">
-              {categories.map((category) => (
-                <div key={category.value} className="flex items-center space-x-2">
+              {categories.map((cat) => (
+                <div key={cat.value} className="flex items-center space-x-2">
                   <Checkbox
-                    id={`tag-${category.value}`}
-                    checked={tags.includes(category.value)}
-                    onCheckedChange={() => toggleTag(category.value)}
+                    id={`edit-tag-${cat.value}`}
+                    checked={tags.includes(cat.value)}
+                    onCheckedChange={() => toggleTag(cat.value)}
                   />
                   <label
-                    htmlFor={`tag-${category.value}`}
+                    htmlFor={`edit-tag-${cat.value}`}
                     className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
                   >
-                    {category.label}
+                    {cat.label}
                   </label>
                 </div>
               ))}
@@ -172,14 +210,11 @@ export function TaskForm() {
           </div>
 
           <div className="flex justify-end gap-2 pt-2">
-            <Button type="button" variant="outline" onClick={() => {
-              setOpen(false)
-              setTaskFormOpen(false)
-            }}>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               取消
             </Button>
             <Button type="submit" disabled={isPending}>
-              {isPending ? '创建中...' : '创建任务'}
+              {isPending ? '保存中...' : '保存'}
             </Button>
           </div>
         </form>
