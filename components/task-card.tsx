@@ -65,6 +65,30 @@ const statusColors = {
   done: 'border-l-emerald-500 dark:border-l-emerald-400',
 }
 
+// 根据优先级设置边框颜色
+const priorityBorderColors = {
+  low: 'border-slate-300 dark:border-slate-600',
+  medium: 'border-blue-400 dark:border-blue-500',
+  high: 'border-orange-400 dark:border-orange-500',
+  critical: 'border-red-400 dark:border-red-500',
+}
+
+// 根据优先级设置阴影颜色
+const priorityShadowColors = {
+  low: 'shadow-slate-200/50 dark:shadow-slate-800/50',
+  medium: 'shadow-blue-200/50 dark:shadow-blue-900/50',
+  high: 'shadow-orange-200/50 dark:shadow-orange-900/50',
+  critical: 'shadow-red-200/50 dark:shadow-red-900/50',
+}
+
+// 根据优先级设置 hover 时的阴影颜色
+const priorityHoverShadowColors = {
+  low: 'hover:shadow-slate-300/60 dark:hover:shadow-slate-700/60',
+  medium: 'hover:shadow-blue-300/60 dark:hover:shadow-blue-800/60',
+  high: 'hover:shadow-orange-300/60 dark:hover:shadow-orange-800/60',
+  critical: 'hover:shadow-red-300/60 dark:hover:shadow-red-800/60',
+}
+
 export function TaskCard({ task }: { task: Task }) {
   const [isPending, startTransition] = useTransition()
   const [isEditOpen, setIsEditOpen] = useState(false)
@@ -83,20 +107,31 @@ export function TaskCard({ task }: { task: Task }) {
   }
 
   return (
-    <Card className={`border-l-4 ${statusColors[task.status]} ${isPending ? 'opacity-50' : ''} bg-card/90 backdrop-blur-sm hover:shadow-md transition-all duration-200 hover:border-opacity-80 border-border/60`}>
+    <Card className={`border-l-4 ${statusColors[task.status]} 
+      border-t border-r border-b ${priorityBorderColors[task.priority]}
+      ${isPending ? 'opacity-50' : ''} 
+      bg-card
+      transition-all duration-300 ease-out
+      shadow-sm ${priorityShadowColors[task.priority]}
+      ${priorityHoverShadowColors[task.priority]}
+      hover:shadow-lg hover:-translate-y-1 
+      hover:scale-[1.02]
+      hover:border-opacity-100
+      cursor-pointer
+      group`}>
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-2 flex-1 min-w-0">
-            <div className={`p-1.5 rounded-md border ${categoryColors[task.category]}`}>
-              <CategoryIcon className="h-3.5 w-3.5" />
+            <div className={`p-1.5 rounded-md border transition-all duration-300 group-hover:scale-110 group-hover:shadow-sm ${categoryColors[task.category]}`}>
+              <CategoryIcon className="h-3.5 w-3.5 transition-transform duration-300 group-hover:rotate-3" />
             </div>
-            <h3 className={`font-medium text-sm truncate ${task.status === 'done' ? 'line-through text-muted-foreground' : 'text-foreground'}`}>
+            <h3 className={`font-medium text-sm truncate transition-colors duration-300 ${task.status === 'done' ? 'line-through text-muted-foreground' : 'text-foreground group-hover:text-primary'}`}>
               {task.title}
             </h3>
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0">
+              <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <MoreVertical className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -126,7 +161,7 @@ export function TaskCard({ task }: { task: Task }) {
       </CardHeader>
       <CardContent className="pt-0">
         {task.description && (
-          <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{task.description}</p>
+          <p className="text-xs text-muted-foreground mb-3 line-clamp-2 transition-colors duration-300 group-hover:text-foreground/80">{task.description}</p>
         )}
         <div className="flex flex-wrap items-center gap-1.5">
           <Badge variant="outline" className={`text-xs ${priorityColors[task.priority]}`}>
