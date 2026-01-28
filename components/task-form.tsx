@@ -15,6 +15,7 @@ import { Textarea } from '@/components/ui/textarea'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -84,6 +85,9 @@ export function TaskForm() {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>创建新任务</DialogTitle>
+          <DialogDescription>
+            填写任务信息以创建新任务
+          </DialogDescription>
         </DialogHeader>
         <form action={handleSubmit} className="space-y-4">
           <div className="space-y-2">

@@ -16,6 +16,7 @@ import { Textarea } from '@/components/ui/textarea'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
@@ -101,6 +102,9 @@ export function TaskEditForm({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>编辑任务</DialogTitle>
+          <DialogDescription>
+            修改任务信息并保存更改
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">

@@ -8,6 +8,7 @@ import { useState, useTransition, useEffect } from 'react'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -106,6 +107,9 @@ export function ProjectTabs() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>创建新项目</DialogTitle>
+              <DialogDescription>
+                创建一个新项目来组织您的任务
+              </DialogDescription>
             </DialogHeader>
             <form action={handleCreateProject} className="space-y-4">
               <div className="space-y-2">
