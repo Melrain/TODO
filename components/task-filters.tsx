@@ -17,26 +17,36 @@ export function TaskFilters() {
   const { filters, setFilters } = useTaskStore()
   const initializedRef = useRef(false)
 
-  // Sync URL params with store on mount (only once)
+  // Sync URL params with store on mount; default status to todo when missing
   useEffect(() => {
     if (initializedRef.current) return
     initializedRef.current = true
 
-    const status = searchParams.get('status') || undefined
+    let status = searchParams.get('status') || undefined
     const category = searchParams.get('category') || undefined
     const priority = searchParams.get('priority') || undefined
-    
-    if (status || category || priority) {
-      setFilters({ status, category, priority })
+
+    if (!status) {
+      status = 'todo'
+      const params = new URLSearchParams(searchParams.toString())
+      params.set('status', 'todo')
+      router.replace(`?${params.toString()}`)
     }
+
+    setFilters({ status, category, priority })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const updateFilter = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString())
     if (value === 'all') {
-      params.delete(key)
-      setFilters({ ...filters, [key]: undefined })
+      if (key === 'status') {
+        params.set(key, 'all')
+        setFilters({ ...filters, [key]: 'all' })
+      } else {
+        params.delete(key)
+        setFilters({ ...filters, [key]: undefined })
+      }
     } else {
       params.set(key, value)
       setFilters({ ...filters, [key]: value })
@@ -47,7 +57,7 @@ export function TaskFilters() {
   return (
     <div className="flex flex-wrap gap-3">
       <Select
-        value={filters.status || searchParams.get('status') || 'all'}
+        value={filters.status || searchParams.get('status') || 'todo'}
         onValueChange={(value) => updateFilter('status', value)}
       >
         <SelectTrigger className="w-[140px]">
@@ -56,7 +66,6 @@ export function TaskFilters() {
         <SelectContent>
           <SelectItem value="all">全部状态</SelectItem>
           <SelectItem value="todo">待办</SelectItem>
-          <SelectItem value="in_progress">进行中</SelectItem>
           <SelectItem value="done">已完成</SelectItem>
         </SelectContent>
       </Select>

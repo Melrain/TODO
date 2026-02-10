@@ -26,7 +26,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { MoreVertical } from 'lucide-react'
 
-export function ProjectTabs() {
+export function ProjectTabs({ additionalActions }: { additionalActions?: React.ReactNode }) {
   const { currentProjectId, setCurrentProjectId } = useTaskStore()
   const [projects, setProjects] = useState<Project[]>([])
   const [isPending, startTransition] = useTransition()
@@ -95,9 +95,10 @@ export function ProjectTabs() {
 
   if (projects.length === 0 && !isPending) {
     return (
-      <div className="flex items-center gap-2 mb-6">
-        <p className="text-sm text-muted-foreground">暂无项目，</p>
-        <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <div className="flex items-center gap-2">
+          <p className="text-sm text-muted-foreground">暂无项目，</p>
+          <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogTrigger asChild>
             <Button variant="outline" size="sm" className="gap-2">
               <Plus className="h-4 w-4" />
@@ -136,6 +137,12 @@ export function ProjectTabs() {
             </form>
           </DialogContent>
         </Dialog>
+        </div>
+        {additionalActions && (
+          <div className="flex items-center gap-2">
+            {additionalActions}
+          </div>
+        )}
       </div>
     )
   }
@@ -143,7 +150,7 @@ export function ProjectTabs() {
   return (
     <div className="mb-6">
       <Tabs value={currentProjectId || ''} onValueChange={handleProjectChange}>
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
           <TabsList className="flex-wrap h-auto">
             {projects.map((project) => (
               <div key={project.id} className="relative group inline-flex">
@@ -176,14 +183,15 @@ export function ProjectTabs() {
               </div>
             ))}
           </TabsList>
-          <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-            <DialogTrigger asChild>
-              <Button variant="outline" size="sm" className="gap-2">
-                <Plus className="h-4 w-4" />
-                新建项目
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
+          <div className="flex items-center gap-2 shrink-0">
+            <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Plus className="h-4 w-4" />
+                  新建项目
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
               <DialogHeader>
                 <DialogTitle>创建新项目</DialogTitle>
               </DialogHeader>
@@ -212,6 +220,8 @@ export function ProjectTabs() {
               </form>
             </DialogContent>
           </Dialog>
+          {additionalActions}
+          </div>
         </div>
       </Tabs>
     </div>

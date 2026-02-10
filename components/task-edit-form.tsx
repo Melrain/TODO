@@ -171,7 +171,6 @@ export function TaskEditForm({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="todo">待办</SelectItem>
-                <SelectItem value="in_progress">进行中</SelectItem>
                 <SelectItem value="done">已完成</SelectItem>
               </SelectContent>
             </Select>

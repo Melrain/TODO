@@ -1,30 +1,32 @@
 import mongoose from 'mongoose';
 
-let isConnected: boolean = false;
-let connectionPromise: Promise<void> | null = null;
+declare global {
+  // eslint-disable-next-line no-var
+  var mongoose: { conn: typeof mongoose | null; promise: Promise<typeof mongoose> | null } | undefined;
+}
 
-// 监听连接事件，自动重置状态
+const cached = global.mongoose ?? { conn: null, promise: null };
+if (!global.mongoose) {
+  global.mongoose = cached;
+}
+
+// 监听连接事件
 mongoose.connection.on('connected', () => {
-  isConnected = true;
   console.log('MongoDB connection established');
 });
 
 mongoose.connection.on('disconnected', () => {
-  isConnected = false;
   console.log('MongoDB connection disconnected');
 });
 
+
 mongoose.connection.on('error', (error) => {
-  isConnected = false;
   console.error('MongoDB connection error:', error);
 });
 
-// 检查连接是否真正可用
+// 检查连接是否真正可用（仅 connected 状态，不含 connecting）
 const isConnectionReady = (): boolean => {
-  return (
-    mongoose.connection.readyState === mongoose.ConnectionStates.connected ||
-    mongoose.connection.readyState === mongoose.ConnectionStates.connecting
-  );
+  return mongoose.connection.readyState === mongoose.ConnectionStates.connected;
 };
 
 export const connectToDatabase = async (): Promise<void> => {
@@ -36,75 +38,75 @@ export const connectToDatabase = async (): Promise<void> => {
     );
   }
 
-  // 如果连接已经建立且状态正常，直接返回
+  // 连接已建立且状态正常，直接返回
   if (isConnectionReady()) {
     return;
   }
 
-  // 如果正在连接中，等待现有连接完成
-  if (connectionPromise) {
-    return connectionPromise;
+  // 正在连接中，等待现有连接完成
+  if (cached.promise) {
+    await cached.promise;
+    return;
   }
 
-  // 如果之前连接过但已断开，重置状态
-  if (isConnected && !isConnectionReady()) {
-    isConnected = false;
-  }
+  const maxRetries = 3;
+  let lastError: Error | null = null;
 
-  // 创建新的连接 Promise，带重试机制
-  connectionPromise = (async () => {
-    const maxRetries = 2;
-    let lastError: Error | null = null;
+  cached.promise = (async () => {
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        await mongoose.connect(process.env.MONGODB_URI!, {
+          bufferCommands: false,
+          dbName: process.env.MONGODB_DB_NAME || 'dev-tasks',
+          serverSelectionTimeoutMS: 15000,
+          connectTimeoutMS: 15000,
+          socketTimeoutMS: 45000,
+          maxPoolSize: 10,
+          minPoolSize: 1,
+          maxIdleTimeMS: 30000,
+          retryWrites: true,
+          w: 'majority',
+        });
 
-    try {
-      for (let attempt = 1; attempt <= maxRetries; attempt++) {
-        try {
-          // 如果已经有连接实例但状态不对，先断开
-          if (mongoose.connection.readyState !== mongoose.ConnectionStates.disconnected) {
-            try {
-              await mongoose.connection.close();
-            } catch (closeError) {
-              // 忽略关闭错误，继续尝试连接
-              console.warn('Error closing existing connection:', closeError);
-            }
-          }
+        console.log('MongoDB is connected');
+        return mongoose;
+      } catch (error) {
+        lastError = error instanceof Error ? error : new Error(String(error));
+        if (attempt < maxRetries) {
+          console.warn(`MongoDB connection attempt ${attempt}/${maxRetries} failed (will retry):`, lastError);
+        } else {
+          console.error(`MongoDB connection failed after ${maxRetries} attempts:`, lastError);
+        }
 
-          await mongoose.connect(process.env.MONGODB_URI!, {
-            dbName: process.env.MONGODB_DB_NAME || 'dev-tasks',
-            serverSelectionTimeoutMS: 10000, // 10 秒超时
-            socketTimeoutMS: 45000,
-            maxPoolSize: 10, // 连接池大小
-            minPoolSize: 1,
-            maxIdleTimeMS: 30000, // 30 秒空闲超时
-            retryWrites: true,
-            w: 'majority',
-          });
-
-          isConnected = true;
-          console.log('MongoDB is connected');
-          return; // 连接成功，退出重试循环
-        } catch (error) {
-          lastError = error instanceof Error ? error : new Error(String(error));
-          console.error(`MongoDB connection attempt ${attempt}/${maxRetries} failed:`, lastError);
-
-          // 如果不是最后一次尝试，等待一下再重试
-          if (attempt < maxRetries) {
-            await new Promise((resolve) => setTimeout(resolve, 1000 * attempt)); // 递增延迟：1s, 2s
+        // 仅在失败时关闭已有连接以便重试
+        if (mongoose.connection.readyState !== mongoose.ConnectionStates.disconnected) {
+          try {
+            await mongoose.connection.close();
+          } catch (closeError) {
+            console.warn('Error closing connection before retry:', closeError);
           }
         }
-      }
 
-      // 所有重试都失败了
-      isConnected = false;
-      throw new Error(
-        `Failed to connect to MongoDB after ${maxRetries} attempts: ${lastError?.message || 'Unknown error'}. ` +
-        `Please check your MONGODB_URI and ensure MongoDB Atlas IP whitelist includes your server's IP address.`
-      );
-    } finally {
-      // 无论成功或失败，都清除 Promise，允许后续新的连接请求
-      connectionPromise = null;
+        if (attempt < maxRetries) {
+          await new Promise((resolve) => setTimeout(resolve, 2000 * attempt));
+        } else {
+          cached.promise = null;
+          throw new Error(
+            `Failed to connect to MongoDB after ${maxRetries} attempts: ${lastError?.message || 'Unknown error'}. ` +
+              `Please check your MONGODB_URI and ensure MongoDB Atlas IP whitelist includes your server's IP address.`
+          );
+        }
+      }
     }
+
+    cached.promise = null;
+    throw lastError ?? new Error('Failed to connect to MongoDB');
   })();
 
-  return connectionPromise;
+  try {
+    cached.conn = await cached.promise;
+  } catch (e) {
+    cached.promise = null;
+    throw e;
+  }
 };

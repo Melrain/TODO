@@ -12,7 +12,7 @@ export type TaskType = {
   description: string | null;
   category: "bug" | "feature" | "refactor" | "docs" | "test" | "other";
   priority: "low" | "medium" | "high" | "critical";
-  status: "todo" | "in_progress" | "done";
+  status: "todo" | "done";
   tags: string[];
   created_at: string;
   updated_at: string;
@@ -46,7 +46,7 @@ export async function getTasks(filters?: {
     }
 
     const priorityOrder = { critical: 1, high: 2, medium: 3, low: 4 };
-    const statusOrder = { in_progress: 1, todo: 2, done: 3 };
+    const statusOrder = { todo: 1, done: 2 };
 
     // Fetch all tasks matching the query, sorted by created_at descending
     const tasks = await Task.find(query).sort({ created_at: -1 }).lean();

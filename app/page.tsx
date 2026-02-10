@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { ProjectTabs } from '@/components/project-tabs';
+import { TaskForm } from '@/components/task-form';
 import { TasksContent } from '@/components/tasks-content';
 import { TasksContentServer } from '@/components/tasks-content-server';
 import { ProjectIdSync } from '@/components/project-id-sync';
@@ -28,6 +29,7 @@ export default async function HomePage({
 
   const filters = await searchParams;
   const projectId = filters.projectId;
+  const status = filters.status ?? 'todo';
 
   return (
     <main className='min-h-screen relative'>
@@ -60,7 +62,7 @@ export default async function HomePage({
           </div>
         </header>
 
-        <ProjectTabs />
+        <ProjectTabs additionalActions={<TaskForm />} />
 
         <ProjectIdSync />
 
@@ -68,7 +70,7 @@ export default async function HomePage({
           <TasksContentServer
             projectId={projectId}
             filters={{
-              status: filters.status,
+              status,
               category: filters.category,
               priority: filters.priority,
             }}

@@ -6,7 +6,8 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "eslint .",
-    "start": "next start"
+    "start": "next start",
+    "migrate:in-progress": "npx tsx scripts/migrate-in-progress-to-todo.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

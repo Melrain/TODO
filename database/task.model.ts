@@ -6,7 +6,7 @@ export interface ITask extends Document {
   description: string | null;
   category: 'bug' | 'feature' | 'refactor' | 'docs' | 'test' | 'other';
   priority: 'low' | 'medium' | 'high' | 'critical';
-  status: 'todo' | 'in_progress' | 'done';
+  status: 'todo' | 'done';
   tags: string[];
   created_at: string;
   updated_at: string;
@@ -37,7 +37,7 @@ const TaskSchema = new Schema({
   },
   status: {
     type: String,
-    enum: ['todo', 'in_progress', 'done'],
+    enum: ['todo', 'done'],
     default: 'todo',
   },
   tags: {

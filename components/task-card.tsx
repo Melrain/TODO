@@ -59,9 +59,8 @@ const priorityColors = {
   critical: 'bg-red-500/15 text-red-600 dark:text-red-400 dark:bg-red-500/20',
 }
 
-const statusColors = {
+const statusColors: Record<string, string> = {
   todo: 'border-l-slate-400 dark:border-l-slate-500',
-  in_progress: 'border-l-amber-500 dark:border-l-amber-400',
   done: 'border-l-emerald-500 dark:border-l-emerald-400',
 }
 
@@ -107,7 +106,7 @@ export function TaskCard({ task }: { task: Task }) {
   }
 
   return (
-    <Card className={`border-l-4 ${statusColors[task.status]} 
+    <Card className={`border-l-4 ${statusColors[task.status] ?? statusColors.todo} 
       border-t border-r border-b ${priorityBorderColors[task.priority]}
       ${isPending ? 'opacity-50' : ''} 
       bg-card
@@ -144,9 +143,6 @@ export function TaskCard({ task }: { task: Task }) {
               <DropdownMenuItem onClick={() => handleStatusChange('todo')} disabled={task.status === 'todo'}>
                 标记为待办
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleStatusChange('in_progress')} disabled={task.status === 'in_progress'}>
-                标记为进行中
-              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleStatusChange('done')} disabled={task.status === 'done'}>
                 标记为已完成
               </DropdownMenuItem>
@@ -168,7 +164,7 @@ export function TaskCard({ task }: { task: Task }) {
             {task.priority === 'low' ? '低' : task.priority === 'medium' ? '中' : task.priority === 'high' ? '高' : '紧急'}
           </Badge>
           <Badge variant="outline" className="text-xs">
-            {task.status === 'todo' ? '待办' : task.status === 'in_progress' ? '进行中' : '已完成'}
+            {task.status === 'done' ? '已完成' : '待办'}
           </Badge>
           {task.tags?.map((tag) => {
             const category = categories.find(c => c.value === tag)
